@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Graph">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{35be6f27-2964-4821-bd4e-76a560ec1d6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Nodes">
+      <UniqueIdentifier>{c6862ae3-2c61-4197-8ac6-fbd2b0476d9a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graph\NodeFactory.cpp">
+      <Filter>Graph</Filter>
+    </ClCompile>
+    <ClCompile Include="Graph\NodeLibrary.cpp">
+      <Filter>Graph</Filter>
+    </ClCompile>
+    <ClCompile Include="Graph\Port.cpp">
+      <Filter>Graph</Filter>
+    </ClCompile>
+    <ClCompile Include="Node_LoopbackSource.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="main_old_ec_raii.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main_old_ec_noraii.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Graph\Node.hpp">
+      <Filter>Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph\Node_Arithmetic.hpp">
+      <Filter>Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph\Node_Comparison.hpp">
+      <Filter>Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph\Node_Logic.hpp">
+      <Filter>Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph\Node_MathFunctions.hpp">
+      <Filter>Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph\NodeFactory.hpp">
+      <Filter>Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph\NodeLibrary.hpp">
+      <Filter>Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph\Port.hpp">
+      <Filter>Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="Any.hpp">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_Volume.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_Spectrum.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_Wavelet.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_BeatFinder.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_LoopbackSource.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
