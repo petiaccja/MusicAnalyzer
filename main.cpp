@@ -19,26 +19,15 @@
 
 #include <conio.h>
 
-//------------------------------------------------------------------------------
-// RAII helpers
-//------------------------------------------------------------------------------
 
-template <class Func>
-struct ScopeGuard {
-public:
-	~ScopeGuard() {
-		if (enabled) {
-			func();
-		}
-	}
-	Func func;
-	bool enabled = false;
-};
+#include "Node_LoopbackSource.hpp"
+#include "Node_Volume.hpp"
+#include "Node_VolumeDisplay.hpp"
+#include "Node_Wavelet.hpp"
+#include "Node_SplitStereo.hpp"
+#include "Node_DownSample.hpp"
 
-template <class Func>
-ScopeGuard<Func> MakeScopeGuard(Func func) {
-	return ScopeGuard<Func>{ func, true };
-}
+#include "ScopeGuard.hpp"
 
 
 using Microsoft::WRL::ComPtr;
@@ -289,6 +278,63 @@ int main() {
 		if (FAILED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
 			throw std::runtime_error("CoInitialize failed.");
 		}
+		auto coUninitialize = MakeScopeGuard([] {CoUninitialize(); });
+
+		std::signal(SIGINT, InterruptSignalHandler);
+
+		LoopbackSource source;
+		SplitStereo split;
+		Wavelet wavelet;
+		Volume volume;
+		DownSample decimate;
+		VolumeDisplay volumeDisplay;
+
+		float freqs[] = { 40, 50, 75, 95, 120, 165, 175, 205, 240, 265, 9000, 14000 };
+		float lengths[] = { 0.1, 0.08, 0.06, 0.05, 0.04, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02};
+		wavelet.SetBands(sizeof(freqs) / 4, freqs, lengths);
+
+		
+		source.GetOutput(1)->Link(split.GetInput(0));
+		source.GetOutput(0)->Link(wavelet.GetInput(0));
+
+		split.GetOutput(0)->Link(wavelet.GetInput(1));
+
+		wavelet.GetOutput(0)->Link(volume.GetInput(0));
+		wavelet.GetOutput(1)->Link(volume.GetInput(1));
+
+		//source.GetOutput(0)->Link(volume.GetInput(0));
+		//source.GetOutput(1)->Link(volume.GetInput(1));
+
+		volume.GetOutput(0)->Link(volumeDisplay.GetInput(0));
+		volume.GetOutput(1)->Link(volumeDisplay.GetInput(1));
+
+
+
+		source.Start("default");
+
+		while (run) {
+			source.Update();
+			split.Update();
+			wavelet.Update();
+			volume.Update();
+			volumeDisplay.Update();
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		}
+
+		source.Stop();
+	}
+	catch (std::exception& ex) {
+		std::cout << "Your code did not work, lel.";
+		std::cout << "Inline engine would give you a nice stack trace, but I wont, n00b.";
+		std::cout << ex.what() << std::endl;
+	}
+	
+	/*
+	try {
+		if (FAILED(CoInitializeEx(NULL, COINIT_MULTITHREADED))) {
+			throw std::runtime_error("CoInitialize failed.");
+		}
 		auto coUninitialize = MakeScopeGuard([]	{CoUninitialize(); });
 
 		std::signal(SIGINT, InterruptSignalHandler);
@@ -326,4 +372,5 @@ int main() {
 
 	std::cout << "Press any key to exit..." << std::endl;
 	_getch();
+	*/
 }

@@ -72,15 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -143,16 +147,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Convolution.cpp" />
     <ClCompile Include="Graph\NodeFactory.cpp" />
     <ClCompile Include="Graph\NodeLibrary.cpp" />
     <ClCompile Include="Graph\Port.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="main_old_ec_noraii.cpp" />
-    <ClCompile Include="main_old_ec_raii.cpp" />
+    <ClCompile Include="Node_DownSample.cpp" />
     <ClCompile Include="Node_LoopbackSource.cpp" />
+    <ClCompile Include="Node_Wavelet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Any.hpp" />
+    <ClInclude Include="Convolution.hpp" />
+    <ClInclude Include="ConvolutionBuffer.hpp" />
     <ClInclude Include="Graph\Node.hpp" />
     <ClInclude Include="Graph\NodeFactory.hpp" />
     <ClInclude Include="Graph\NodeLibrary.hpp" />
@@ -162,10 +169,14 @@
     <ClInclude Include="Graph\Node_MathFunctions.hpp" />
     <ClInclude Include="Graph\Port.hpp" />
     <ClInclude Include="Node_BeatFinder.hpp" />
+    <ClInclude Include="Node_DownSample.hpp" />
     <ClInclude Include="Node_LoopbackSource.hpp" />
     <ClInclude Include="Node_Spectrum.hpp" />
     <ClInclude Include="Node_Volume.hpp" />
+    <ClInclude Include="Node_VolumeDisplay.hpp" />
     <ClInclude Include="Node_Wavelet.hpp" />
+    <ClInclude Include="ScopeGuard.hpp" />
+    <ClInclude Include="Node_SplitStereo.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

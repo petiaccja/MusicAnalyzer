@@ -32,11 +32,14 @@
     <ClCompile Include="Node_LoopbackSource.cpp">
       <Filter>Nodes</Filter>
     </ClCompile>
-    <ClCompile Include="main_old_ec_raii.cpp">
+    <ClCompile Include="Node_Wavelet.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Convolution.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main_old_ec_noraii.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Node_DownSample.cpp">
+      <Filter>Nodes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +83,24 @@
       <Filter>Nodes</Filter>
     </ClInclude>
     <ClInclude Include="Node_LoopbackSource.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_VolumeDisplay.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopeGuard.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConvolutionBuffer.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Convolution.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_SplitStereo.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_DownSample.hpp">
       <Filter>Nodes</Filter>
     </ClInclude>
   </ItemGroup>
