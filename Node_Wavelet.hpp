@@ -29,6 +29,7 @@ private:
 private:
 	std::vector<std::vector<float>> m_waveletReals;
 	std::vector<std::vector<float>> m_waveletImags;
+	std::vector<int> m_delays;
 	std::vector<Band> m_bands;
 	int m_sampleRate = 0;
 	ConvolutionBuffer m_buffer;

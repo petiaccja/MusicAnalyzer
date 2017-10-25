@@ -1,5 +1,5 @@
 sampleRate = 48000;
-cutoff = 8000;
+cutoff = 1800;
 length = 0.002;
 
 numSamples = floor(sampleRate*length/2)*2+1;
@@ -19,7 +19,7 @@ y = y.* w;
 y = y / sum(y);
 
 figure(1);
-plot(t, [y' w']);
+plot(t, [y']);
 fftsize = 16384;
 figure(2);
 plot((0:fftsize-1)./(fftsize-1).*sampleRate, abs(fft(y, fftsize)));

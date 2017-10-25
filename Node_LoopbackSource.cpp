@@ -8,7 +8,7 @@ using Microsoft::WRL::ComPtr;
 
 
 LoopbackSource::LoopbackSource() {
-
+	GetOutput<0>().Set(11025);
 }
 
 LoopbackSource::~LoopbackSource() {

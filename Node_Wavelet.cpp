@@ -13,8 +13,11 @@ void Wavelet::Update() {
 		RecalcWavelets();
 	}
 
+	int downsample = 1;
 	std::vector<float> samples = GetInput<1>().Get();
 	if (samples.size() == 0) {
+		GetOutput<0>().Set(sampleRate / downsample);
+		GetOutput<1>().Set(std::vector<std::vector<float>>(m_waveletReals.size()));
 		return;
 	}
 
@@ -30,24 +33,23 @@ void Wavelet::Update() {
 	std::vector<std::vector<float>> results;
 	std::vector<float> signalBuffer(m_workingSet.size());
 
-	int downsample = 10;
 	int downsampledCount = (samples.size() + downsample - 1) / downsample;
-	for (size_t j = 0; j < m_waveletReals.size(); ++j) {
+	for (size_t channel = 0; channel < m_waveletReals.size(); ++channel) {
 		std::vector<float> result(downsampledCount);
 
-		for (size_t i = 0; i < samples.size(); i += downsample) {
+		for (size_t sample = 0; sample < samples.size(); sample += downsample) {
 			std::complex<float> c;
 
-			float* w_re = m_waveletReals[j].data();
-			float* w_im = m_waveletImags[j].data();
-			size_t dim = m_waveletReals[j].size();
-			float* signal = m_workingSet.data() + m_buffer.GetSize() - dim - delay + i;
+			float* w_re = m_waveletReals[channel].data();
+			float* w_im = m_waveletImags[channel].data();
+			size_t dim = m_waveletReals[channel].size();
+			float* signal = m_workingSet.data() + m_delays[channel] + 1 + sample;
 			memcpy(signalBuffer.data(), signal, sizeof(float)*dim);
 
 			c.real(ScalarProduct(w_re, signalBuffer.data(), dim));
 			c.imag(ScalarProduct(w_im, signalBuffer.data(), dim));
 
-			result[i / downsample] = std::abs(c);
+			result[sample / downsample] = std::abs(c);
 		}
 		results.push_back(result);
 	}
@@ -89,6 +91,11 @@ void Wavelet::RecalcWavelets() {
 		maxWaveLen = std::max(maxWaveLen, m_waveletReals.back().size());
 	}
 
+	m_delays.resize(m_bands.size());
+	for (int i = 0; i < m_bands.size(); ++i) {
+		m_delays[i] = (maxWaveLen - m_waveletReals[i].size()) / 2;
+	}
+
 	m_buffer.SetSize(maxWaveLen);
 }
 
@@ -98,7 +105,6 @@ std::vector<std::complex<float>> Wavelet::MorletWavelet(float frequency, float l
 	using namespace std::literals::complex_literals;
 	constexpr float pi = 3.1415926535897932384626f;
 
-	//float waveletDuration = 1.0f / frequency * 2 * cycles; // total duration of the wavelet in seconds
 	float samplePeriod = 1.0f / sampleRate;
 
 	// calculate the number of taps the wavelet will occupy
@@ -111,7 +117,7 @@ std::vector<std::complex<float>> Wavelet::MorletWavelet(float frequency, float l
 	std::vector<std::complex<float>> coefficients(numTaps);
 
 	// variance of the bell curve envelope
-	float variance = length / 6;
+	float variance = length / 3; // practically zero ends at var = 6;
 	float varianceSquared = variance * variance;
 
 	// calculate coefficients

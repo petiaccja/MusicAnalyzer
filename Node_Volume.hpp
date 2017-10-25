@@ -21,7 +21,7 @@ public:
 			m_values.resize(samples.size(), 0.0f);
 		}
 
-		float decayFactor = 0.99f;
+		float decayFactor = 0.98f;
 		for (int ch = 0; ch < samples.size(); ++ch) {
 			for (int s = 0; s < samples[ch].size(); ++s) {
 				float sq = samples[ch][s] * samples[ch][s];

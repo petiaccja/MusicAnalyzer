@@ -8,9 +8,9 @@
 #include <atomic>
 #include <future>
 
-#include <wrl/client.h>
 
 #define NOMINMAX
+#include <wrl/client.h>
 #include <windows.h>
 #include <mmsystem.h>
 #include <mmdeviceapi.h>

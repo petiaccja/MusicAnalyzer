@@ -9,13 +9,13 @@
 #include <Windows.h>
 
 
-class VolumeDisplay
+class BarDisplay
 	// sample rate, channel samples
 	: public exc::InputPortConfig<int, std::vector<std::vector<float>>>,
 	public exc::OutputPortConfig<>
 {
 public:
-	VolumeDisplay() {
+	BarDisplay() {
 		// ugly console hack
 		COORD topLeft = { 0, 0 };
 		HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -38,13 +38,9 @@ public:
 		FillConsoleOutputCharacterA(hConsole, ' ', width * samples.size(), { 0, 1 }, &written);
 		SetConsoleCursorPosition(hConsole, { 0, 1 });
 		for (int ch = 0; ch < samples.size(); ++ch) {
-			float volf = !samples[ch].empty() ? samples[ch][0] : 0.0f;
-			float voldb = 20 * log10(volf);
-			voldb = std::max(-60.f, voldb);
-			voldb /= 60.f;
-			voldb += 1.0f;
+			float value = !samples[ch].empty() ? samples[ch][0] : 0.0f;
 
-			int numChars = std::min(int(width), int(width*voldb));
+			int numChars = std::min(int(width), int(width*value));
 			numChars = std::max(0, numChars);
 			FillConsoleOutputCharacterA(hConsole, '#', numChars, { 0, SHORT(1 + ch) }, &written);
 		}

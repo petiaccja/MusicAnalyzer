@@ -2,39 +2,40 @@
 
 #include "Graph_All.hpp"
 
+#include "ConvolutionBuffer.hpp"
+
 #include <vector>
+#include <Mathter/Matrix.hpp>
+
+
+// algorithm:
+
 
 
 class BeatFinder
-	// volume, wavelet
+	// sample rate, signal, wavelet
 	: public exc::InputPortConfig<int, std::vector<float>, std::vector<std::vector<float>>>,
-	// sample rate, channel samples
-	public exc::OutputPortConfig<std::vector<std::vector<float>>>
+	// samnple rate, beat probability
+	public exc::OutputPortConfig<int, std::vector<std::vector<float>>>
 {
+	static constexpr int NumKickBands = 8;
+	static constexpr int NumSnareBands = 6;
 public:
+	BeatFinder();
 	void Notify(exc::InputPortBase* sender) override {}
-	void Update() override {
-		int inputSampleRate = GetInput<0>().Get();
-		std::vector<std::vector<float>> samples = GetInput<1>().Get();
+	void Update() override;
+	void ResizeBuffers();
 
-		if (samples.size() != m_values.size()) {
-			m_values.resize(samples.size(), 0.0f);
-		}
-
-		float decayFactor = 0.99f;
-		for (int ch = 0; ch < samples.size(); ++ch) {
-			for (int s = 0; s < samples[ch].size(); ++s) {
-				float sq = samples[ch][s] * samples[ch][s];
-				float volume = m_values[ch] * m_values[ch] * decayFactor + sq*(1.0f - decayFactor);
-				m_values[ch] = sqrt(volume);
-				samples[ch][s] = sqrt(volume);
-			}
-		}
-
-		GetOutput<0>().Set(inputSampleRate);
-		GetOutput<1>().Set(samples);
-	}
-
+	static float Volume(const float* signal, int numSamples);
+	static float Mean(const float* signal, int numSamples);
+	static float Variance(const float* signal, float mean, int numSamples);
+	static float Variance(const float* signal, int numSamples);
+	static float Covariance(const float* signal1, const float* signal2, float mean1, float mean2, int numSamples);
+	static float Covariance(const float* signal1, const float* signal2, int numSamples);
 private:
-	std::vector<float> m_values;
+	ConvolutionBuffer m_signalBuffer;
+	std::vector<ConvolutionBuffer> m_buffers;
+	int m_sampleRate = 1;
+	int m_historySize = 1;
+
 };

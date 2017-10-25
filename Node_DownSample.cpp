@@ -8,7 +8,7 @@ using namespace mathter;
 constexpr float Pi = Constants<float>::Pi;
 
 
-inline void DownSample::Update() {
+void DownSample::Update() {
 	int sampleRate = GetInput<0>().Get();
 	std::vector<float> inSamples = GetInput<1>().Get();
 	int factor = GetInput<2>().Get();
@@ -52,6 +52,7 @@ void DownSample::RecomputeFilters() {
 	float cutoff = newNyquistLimit * 0.85f;
 
 	m_lpf = CreateLPF(m_currentSampleRate, cutoff, 0.002f);
+	m_buffer.SetSize(m_lpf.size());
 }
 
 
@@ -59,14 +60,14 @@ std::vector<float> DownSample::CreateLPF(int sampleRate, float cutoff, float len
 	int numSamples = int(sampleRate*length / 2) * 2 + 1;
 	std::vector<float> samples(numSamples);
 
+	float n = 2.0f*cutoff;
 	for (int i = 0; i < numSamples; ++i) {
-		float n = 2.0f*cutoff;
-		float t = length*(i - 1) - length / 2;
+		float t = length*((float)i/(float)(numSamples-1)) - length / 2;
 		float y = sin(Pi*n*t) / (Pi*n*t);
 		float w = 0.54f + 0.46f*cos(2.0f*t / length*Pi);
 		samples[i] = y*w;
 	}
-	samples[numSamples / 2 + 1] = 1.0f;
+	samples[numSamples / 2] = 1.0f;
 
 	double sum = 0.0f;
 	for (auto v : samples) {

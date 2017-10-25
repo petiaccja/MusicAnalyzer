@@ -15,6 +15,9 @@
     <Filter Include="Nodes">
       <UniqueIdentifier>{c6862ae3-2c61-4197-8ac6-fbd2b0476d9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Nodes\Shaders">
+      <UniqueIdentifier>{23d30827-7362-4b08-a1fa-a9b1f52569ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,6 +42,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Node_DownSample.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Node_BeatFinder.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Node_Visualizer.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Node_FFT.cpp">
       <Filter>Nodes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -103,5 +115,31 @@
     <ClInclude Include="Node_DownSample.hpp">
       <Filter>Nodes</Filter>
     </ClInclude>
+    <ClInclude Include="Node_BarDisplay.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_Visualizer.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Node_FFT.hpp">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="VsQuad.hlsl">
+      <Filter>Nodes\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PsSpectrogram.hlsl">
+      <Filter>Nodes\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="VsSignal.hlsl">
+      <Filter>Nodes\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PsSimplecolor.hlsl">
+      <Filter>Nodes\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="include\Mathter\Mathter.natvis" />
   </ItemGroup>
 </Project>
