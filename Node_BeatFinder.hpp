@@ -35,7 +35,9 @@ public:
 private:
 	ConvolutionBuffer m_signalBuffer;
 	std::vector<ConvolutionBuffer> m_buffers;
+	ConvolutionBuffer m_kickBuffer;
+	std::vector<float> m_kickFilter;
 	int m_sampleRate = 1;
 	int m_historySize = 1;
-
+	float m_kickProbabiltiyPrev = 0.0f;
 };

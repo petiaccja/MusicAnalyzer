@@ -71,7 +71,6 @@ void BeatFinder::Update() {
 	std::vector<std::vector<float>> output(2);
 
 	// Loop through each input sample
-	static float kickProbabilityPrev = 0;
 	for (int sample = 0; sample < signal.size(); sample += downsample) {
 		// IDEA:
 		// try to least-squares fit a second degree polynomial to the kick wavelet tracks
@@ -91,8 +90,8 @@ void BeatFinder::Update() {
 		float volume;
 
 		// calculate volume
-		float* psignal = signalSet.data() + sample + 10;
-		volume = Volume(psignal, m_sampleRate);
+		float* psignal = signalSet.data() + sample;
+		volume = Volume(psignal, m_sampleRate * 2);
 		
 
 		// calculate probability
@@ -103,21 +102,34 @@ void BeatFinder::Update() {
 		auto kickMean = CalcMeanKick(m_sampleRate * 1.5, sample);
 		auto kickCov = CalcCovmatKick(m_sampleRate * 0.07, sample, kickMean);
 		auto kickMeanShort = CalcMeanKick(m_sampleRate * 0.05, sample);
-		auto kickVol = 0.0f;
+		float kickVolShort = 0.0f;
+		float kickVolLong = 0.0f;
 		for (auto v : kickMeanShort) {
-			kickVol += v;
+			kickVolShort += v;
+		}
+		for (auto v : kickMeanLong) {
+			kickVolLong += v;
 		}
 
 		auto kickCovMod = kickCov;
 		for (int i = 0; i < kickCovMod.RowCount(); ++i) {
 			kickCovMod(i, i) = 0.0f;
 		}
-		kickProbability = kickCovMod.Norm() * 100 * kickVol;
-		float derivative = (kickProbability - kickProbabilityPrev)*m_sampleRate;
-		kickProbabilityPrev = kickProbability;
+		kickProbability = kickCovMod.Norm() * 42.f * kickVolShort / kickVolLong / volume;
+		float derivative = (kickProbability - m_kickProbabiltiyPrev)*m_sampleRate;
+		m_kickProbabiltiyPrev = kickProbability;
+		m_kickBuffer.AddSamples(&derivative, 1);
 
-		output[0].push_back(derivative / 20);
-		output[1].push_back(kickProbability);
+		float sum = 0.0f;
+		int numTaps = m_kickFilter.size();
+		for (int i = 0; i < numTaps; ++i) {
+			sum += m_kickFilter[i] * m_kickBuffer.GetSamples()[i];
+		}
+
+		//output[0].push_back(derivative / 20);
+		output[0].push_back(sum / 15);
+		//output[1].push_back(kickProbability);
+		output[1].push_back(0);
 	}
 
 	GetOutput<0>().Set(sampleRate / downsample);
@@ -134,6 +146,26 @@ void BeatFinder::ResizeBuffers() {
 		buffer.SetSize(m_historySize - 1);
 	}
 	m_signalBuffer.SetSize(m_historySize - 1);
+
+	// kick filter
+	float kickFilterLength = 0.13f;
+	float numTapsDesired = ceil(kickFilterLength * m_sampleRate);
+	int firstTap = floor(-numTapsDesired / 2.0f);
+	int lastTap = -firstTap;
+	int numTaps = lastTap - firstTap + 1;
+
+	m_kickFilter.resize(numTaps);
+
+	// calculate coefficients
+	for (int i = firstTap; i <= lastTap; ++i) {
+		float x = (float)i / (float)m_sampleRate;
+		float y = -sin(Constants<float>::Pi * x / kickFilterLength * 2);
+		// 1+(0.5-cos(pi*t)/2).^4; plot(t,p);
+		float p = 1 + pow(0.5f - 0.5f*cos(Constants<float>::Pi * x / kickFilterLength * 2), 4);
+		float h = (y >= 0 ? 1.f : -1.f) * pow(abs(y), p);
+		m_kickFilter[i - firstTap] = h / numTaps;
+	}
+	m_kickBuffer.SetSize(numTaps);
 }
 
 
